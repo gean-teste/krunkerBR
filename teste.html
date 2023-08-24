@@ -1,0 +1,55 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+</head>
+<body>
+    <label for="cepInput">Digite o CEP: </label>
+    <input type="text" id="cepInput" placeholder="Digite o CEP">
+    <!-- <button id="pesquisa">Buscar</button> -->
+    
+    <div id="cepInf"></div>
+
+    <script>
+        async function logCep(num_cep) {
+            const response = await fetch(`https://viacep.com.br/ws/${num_cep}/json/`);
+            const cep = await response.json();
+
+            const cepInfo = document.getElementById('cepInf');
+            cepInfo.innerHTML = `
+                <p>CEP: ${cep.cep}</p>
+                <p>Logradouro: ${cep.logradouro}</p>
+                <p>Bairro: ${cep.bairro}</p>
+                <p>Cidade: ${cep.localidade}</p>
+                <p>Estado: ${cep.uf}</p>
+                <p>DDD: ${cep.ddd}</p>`;
+        }
+
+        const cepInput = document.getElementById('cepInput');
+        cepInput.addEventListener('input', () => {
+            const validade = cepInput.value.length;
+            const valid = /^[0-9]+$/.test(cepInput.value);
+
+            if (validade === 8 && valid) {
+                logCep(cepInput.value);
+            } else if (!valid) {
+                alert("O CEP deve conter apenas números.");
+                cepInput.value = '';
+            }
+        });
+
+        const botao = document.getElementById('pesquisa');
+        botao.addEventListener('click', () => {
+            const valid = /^[0-9]+$/.test(cepInput.value); 
+            if (valid) {
+                logCep(cepInput.value);
+            } else {
+                alert("O CEP deve conter apenas números.");
+                cepInput.value = '';
+            }
+        });
+    </script>
+</body>
+</html>
